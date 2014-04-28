@@ -7,9 +7,9 @@ CREATE TABLE channel(
 	motd			varchar(200)	NULL,
 	title			varchar(50)		NULL,
 	user_count		int				NULL,
-	CONSTRAINT		primary_key		PRIMARY KEY(channel_id),
-	CONSTRAINT		network_fk		FOREIGN KEY(network_id)
-									REFERENCES irc_network(network_id)
-										ON UPDATE NO ACTION
-										ON DELETE NO ACTION
+	PRIMARY KEY(channel_id),
+	FOREIGN KEY(network_id)
+					REFERENCES irc_network(network_id)
+						ON UPDATE NO ACTION
+						ON DELETE NO ACTION
 	);
