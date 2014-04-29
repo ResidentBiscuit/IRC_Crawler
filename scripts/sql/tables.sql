@@ -37,9 +37,10 @@ CREATE TABLE channel_mode(
 
 CREATE TABLE nick(
 	nick_id		serial		NOT NULL,
-	nick		varchar(50)	NOT NULL UNIQUE,
+	nick		varchar(50)	NOT NULL,
 	network_id	int			NOT NULL,
 	PRIMARY KEY(nick_id),
+	UNIQUE(nick, network_id),
 	FOREIGN KEY(network_id) REFERENCES irc_network(network_id)
 	);
 		
