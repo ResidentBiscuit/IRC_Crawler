@@ -1,3 +1,5 @@
+-- Creates user_nick_intersection table --
+
 CREATE TABLE user_nick_intersection(
 	user_id		int		NOT NULL,
 	nick_id		int		NOT NULL,
