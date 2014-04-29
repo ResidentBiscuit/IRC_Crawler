@@ -21,10 +21,7 @@ CREATE TABLE channel(
 	title			varchar(50)		NULL,
 	user_count		int				NULL,
 	PRIMARY KEY(channel_id),
-	FOREIGN KEY(network_id)
-					REFERENCES irc_network(network_id)
-						ON UPDATE NO ACTION
-						ON DELETE NO ACTION
+	FOREIGN KEY(network_id) REFERENCES irc_network(network_id)
 	);
 	
 -- Creates channel_mode table --
@@ -33,10 +30,7 @@ CREATE TABLE channel_mode(
 	channel_id		int		NOT NULL,
 	channel_mode	char(1)	NOT NULL,
 	PRIMARY KEY(channel_id, channel_mode),
-	FOREIGN KEY(channel_id)
-					REFERENCES channel(channel_id)
-						ON UPDATE NO ACTION
-						ON DELETE NO ACTION
+	FOREIGN KEY(channel_id) REFERENCES channel(channel_id)
 	);
 
 -- Create nick table --
@@ -46,10 +40,7 @@ CREATE TABLE nick(
 	nick		varchar(50)	NOT NULL UNIQUE,
 	network_id	int			NOT NULL,
 	PRIMARY KEY(nick_id),
-	FOREIGN KEY(network_id)
-		REFERENCES irc_network(network_id)
-			ON UPDATE NO ACTION
-			ON DELETE NO ACTION
+	FOREIGN KEY(network_id) REFERENCES irc_network(network_id)
 	);
 		
 -- Creates chan_nick_intersection table --
@@ -59,14 +50,8 @@ CREATE TABLE chan_nick_intersection(
 	channel_id	int		NOT NULL,
 	times_seen	int		NULL,
 	PRIMARY KEY(nick_id, channel_id),
-	FOREIGN KEY(nick_id)
-		REFERENCES nick(nick_id)
-			ON UPDATE NO ACTION
-			ON DELETE NO ACTION,
-	FOREIGN KEY(channel_id)
-		REFERENCES channel(channel_id)
-			ON UPDATE NO ACTION
-			ON DELETE NO ACTION
+	FOREIGN KEY(nick_id)    REFERENCES nick(nick_id),
+	FOREIGN KEY(channel_id) REFERENCES channel(channel_id)
 	);
 	
 -- Creates nick_mode table --
@@ -76,14 +61,8 @@ CREATE TABLE nick_mode(
 	channel_id	int		NOT NULL,
 	mode		char(1)	NOT NULL,
 	PRIMARY KEY(nick_id, channel_id, mode),
-	FOREIGN KEY(nick_id)
-		REFERENCES nick(nick_id)
-			ON UPDATE NO ACTION
-			ON DELETE NO ACTION,
-	FOREIGN KEY(channel_id)
-		REFERENCES channel(channel_id)
-			ON UPDATE NO ACTION
-			ON DELETE NO ACTION
+	FOREIGN KEY(nick_id)    REFERENCES nick(nick_id),
+	FOREIGN KEY(channel_id) REFERENCES channel(channel_id)
 	);
 	
 -- Creates user_name table --
@@ -94,10 +73,7 @@ CREATE TABLE user_name(
 	user_name	varchar(100)	NOT NULL,
 	real_name	varchar(100) 	NULL,
 	PRIMARY KEY(user_id),
-	FOREIGN KEY(network_id)
-		REFERENCES irc_network(network_id)
-			ON UPDATE NO ACTION
-			ON DELETE NO ACTION
+	FOREIGN KEY(network_id) REFERENCES irc_network(network_id)
 	);
 	
 -- Create the country table --
@@ -112,29 +88,17 @@ CREATE TABLE country(
 -- Creates user_nick_intersection table --
 
 CREATE TABLE user_nick_intersection(
-	user_id		int		NOT NULL,
-	nick_id		int		NOT NULL,
-	network_id	int		NOT NULL,
-	ip_addr		inet	NULL,
+	user_id		int		        NOT NULL,
+	nick_id		int		        NOT NULL,
+	network_id	int		        NOT NULL,
+	ip_addr		inet	        NULL,
 	hostname	varchar(100)	NULL,
 	country_code	char(2)		NULL,
 	PRIMARY KEY(user_id,nick_id,network_id),
-	FOREIGN KEY(user_id)
-		REFERENCES user_name(user_id)
-			ON UPDATE NO ACTION
-			ON DELETE NO ACTION,
-	FOREIGN KEY(nick_id)
-			REFERENCES nick(nick_id)
-				ON UPDATE NO ACTION
-				ON DELETE NO ACTION,
-	FOREIGN KEY(network_id)
-			REFERENCES irc_network(network_id)
-				ON UPDATE NO ACTION
-				ON DELETE NO ACTION,
-	FOREIGN KEY(country_code)
-			REFERENCES country(country_code)
-				ON UPDATE NO ACTION
-				ON DELETE NO ACTION
+	FOREIGN KEY(user_id)        REFERENCES user_name(user_id),
+	FOREIGN KEY(nick_id)        REFERENCES nick(nick_id),
+	FOREIGN KEY(network_id)     REFERENCES irc_network(network_id),
+	FOREIGN KEY(country_code)   REFERENCES country(country_code)
 	);
 	
 -- Creates message table --
