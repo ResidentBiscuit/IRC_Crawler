@@ -108,7 +108,7 @@ CREATE TABLE message(
 	user_id		int				NOT NULL,
 	nick_id		int				NOT NULL,
 	network_id	int				NOT NULL,
-	time_stamp	timestamp		NOT NULL,
+	time_stamp	timestamp		NOT NULL DEFAULT now(),
 	message		varchar(250)	NOT NULL,
 	recipient	varchar(100)	NOT NULL,
 	PRIMARY KEY(user_id, nick_id, network_id, time_stamp),
