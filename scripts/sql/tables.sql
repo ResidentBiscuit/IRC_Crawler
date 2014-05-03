@@ -3,116 +3,66 @@
 	-- exactly what you are doing. It is used when building the database. --
 
 -- Creates the irc_network table --
-
 CREATE TABLE irc_network(
-	network_id 		serial 			NOT NULL,
-	network_name	varchar(50)		NOT NULL UNIQUE,
-	user_count		bigint			NULL,
+	network_id		serial			NOT NULL,
+	network_name	varchar(256)	NOT NULL,
+	user_count		integer			NULL,
 	PRIMARY KEY(network_id)
 	);
 	
--- Create the channel table --
-
+-- Creates the channel table --
 CREATE TABLE channel(
 	channel_id		serial			NOT NULL,
-	network_id		int				NOT NULL,
-	channel_name	varchar(100)	NOT NULL,
-	motd			varchar(200)	NULL,
-	title			varchar(50)		NULL,
-	user_count		int				NULL,
+	network_id		integer			NOT NULL,
+	channel_name	varchar(256)	NOT NULL,
+	title			varchar(256)	NULL,
+	motd			varchar(2048)	NULL,
+	user_count		integer			NULL,
+	modes			varchar(256)	NULL,
 	PRIMARY KEY(channel_id),
-	FOREIGN KEY(network_id) REFERENCES irc_network(network_id)
+	FOREIGN KEY(network_id)	REFERENCES irc_network(network_id)
 	);
 	
--- Creates channel_mode table --
-
-CREATE TABLE channel_mode(
-	channel_id		int		NOT NULL,
-	channel_mode	char(1)	NOT NULL,
-	PRIMARY KEY(channel_id, channel_mode),
-	FOREIGN KEY(channel_id) REFERENCES channel(channel_id)
-	);
-
--- Create nick table --
-
-CREATE TABLE nick(
-	nick_id		serial		NOT NULL,
-	nick		varchar(50)	NOT NULL,
-	network_id	int			NOT NULL,
-	PRIMARY KEY(nick_id),
-	UNIQUE(nick, network_id),
-	FOREIGN KEY(network_id) REFERENCES irc_network(network_id)
-	);
-		
--- Creates chan_nick_intersection table --
-
-CREATE TABLE chan_nick_intersection(
-	nick_id		int		NOT NULL,
-	channel_id	int		NOT NULL,
-	times_seen	int		NULL,
-	PRIMARY KEY(nick_id, channel_id),
-	FOREIGN KEY(nick_id)    REFERENCES nick(nick_id),
-	FOREIGN KEY(channel_id) REFERENCES channel(channel_id)
-	);
-	
--- Creates nick_mode table --
-
-CREATE TABLE nick_mode(
-	nick_id		int		NOT NULL,
-	channel_id	int		NOT NULL,
-	mode		char(1)	NOT NULL,
-	PRIMARY KEY(nick_id, channel_id, mode),
-	FOREIGN KEY(nick_id)    REFERENCES nick(nick_id),
-	FOREIGN KEY(channel_id) REFERENCES channel(channel_id)
-	);
-	
--- Creates user_name table --
-
-CREATE TABLE user_name(
-	user_id		serial			NOT NULL,
-	network_id	int				NOT NULL,
-	user_name	varchar(100)	NOT NULL,
-	real_name	varchar(100) 	NULL,
-	PRIMARY KEY(user_id),
-	FOREIGN KEY(network_id) REFERENCES irc_network(network_id)
-	);
-	
--- Create the country table --
-
+-- Creates the country table --
 CREATE TABLE country(
 	country_code	char(2)			NOT NULL,
-	country_name	varchar(100)	NOT NULL UNIQUE,
-	subnet			cidr			NOT NULL,
-	CONSTRAINT		country_key		PRIMARY KEY(country_code)
+	country			varchar(2048)	NOT NULL UNIQUE,
+	subnet			inet			NOT NULL,
+	PRIMARY KEY(country_code)
 	);
 	
--- Creates user_nick_intersection table --
-
-CREATE TABLE user_nick_intersection(
-	user_id		int		        NOT NULL,
-	nick_id		int		        NOT NULL,
-	network_id	int		        NOT NULL,
-	ip_addr		inet	        NULL,
-	hostname	varchar(100)	NULL,
-	country_code	char(2)		NULL,
-	PRIMARY KEY(user_id,nick_id,network_id),
-	FOREIGN KEY(user_id)        REFERENCES user_name(user_id),
-	FOREIGN KEY(nick_id)        REFERENCES nick(nick_id),
-	FOREIGN KEY(network_id)     REFERENCES irc_network(network_id),
-	FOREIGN KEY(country_code)   REFERENCES country(country_code)
+-- Creates the nick table --
+CREATE TABLE nick(
+	nick_id			serial			NOT NULL,
+	nick			varchar(256)	NOT NULL,
+	network_id		integer			NOT NULL,
+	country_code	char(2)			NULL,
+	ip_address		inet			NULL,
+	hostname		varchar(512)	NULL,
+	PRIMARY KEY(nick_id),
+	FOREIGN KEY(network_id)		REFERENCES irc_network(network_id),
+	FOREIGN KEY(country_code)	REFERENCES country(country_code),
+	UNIQUE(nick, network_id)
 	);
 	
--- Creates message table --
-
+-- Creates the channel_nick_intersection table --
+CREATE TABLE channel_nick_intersection(
+	channel_id		integer			NOT NULL,
+	nick_id			integer			NOT NULL,
+	times_seen		integer			NULL,
+	modes			varchar(256)	NULL,
+	PRIMARY KEY(channel_id, nick_id),
+	FOREIGN KEY(channel_id) REFERENCES channel(channel_id),
+	FOREIGN KEY(nick_id)	REFERENCES nick(nick_id)
+	);
+	
+-- Creates the message table --
 CREATE TABLE message(
-	user_id		int				NOT NULL,
-	nick_id		int				NOT NULL,
-	network_id	int				NOT NULL,
-	time_stamp	timestamp		NOT NULL DEFAULT now(),
-	message		varchar(250)	NOT NULL,
-	recipient	varchar(100)	NOT NULL,
-	PRIMARY KEY(user_id, nick_id, network_id, time_stamp),
-	FOREIGN KEY(user_id) 	REFERENCES user_name(user_id),
-	FOREIGN KEY(nick_id) 	REFERENCES nick(nick_id),
-	FOREIGN KEY(network_id)	REFERENCES irc_network(network_id)
-	);			
+	message_id		serial			NOT NULL,
+	nick_id			integer			NOT NULL,
+	message			varchar(4096)	NOT NULL,
+	recipient		varchar(512)	NOT NULL,
+	time			timestamp		NOT NULL DEFAULT now(),
+	PRIMARY KEY(message_id),
+	FOREIGN KEY(nick_id)	REFERENCES nick(nick_id)
+	);
