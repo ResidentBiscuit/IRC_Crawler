@@ -5,7 +5,7 @@
 -- Creates the irc_network table --
 CREATE TABLE irc_network(
 	network_id		serial			NOT NULL,
-	network_name	varchar(256)	NOT NULL,
+	network_name	varchar(256)	NOT NULL UNIQUE,
 	user_count		integer			NULL,
 	PRIMARY KEY(network_id)
 	);
@@ -20,6 +20,7 @@ CREATE TABLE channel(
 	user_count		integer			NULL,
 	modes			varchar(256)	NULL,
 	PRIMARY KEY(channel_id),
+	UNIQUE(channel_name, network_id),
 	FOREIGN KEY(network_id)	REFERENCES irc_network(network_id)
 	);
 	
