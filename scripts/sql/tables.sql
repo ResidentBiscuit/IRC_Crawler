@@ -25,6 +25,7 @@ CREATE TABLE channel(
 	);
 	
 -- Creates the country table --
+-- Country codes determined by ISO-3166 --
 CREATE TABLE country(
 	country_code	char(2)			NOT NULL,
 	country			varchar(2048)	NOT NULL UNIQUE,
