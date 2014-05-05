@@ -65,5 +65,5 @@ CREATE TABLE message(
 	recipient		varchar(512)	NOT NULL,
 	time			timestamp		NOT NULL DEFAULT now(),
 	PRIMARY KEY(message_id),
-	FOREIGN KEY(nick_id)	REFERENCES nick(nick_id)
+	FOREIGN KEY(nick_id)	REFERENCES	nick(nick_id)
 	);
