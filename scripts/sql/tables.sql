@@ -1,5 +1,5 @@
--- Run this script through the SQL client to create the tables of the database --
-	-- NOTE, this file is very important. Do not make changes to this unless you are certain you know --
+-- Run this script through the SQL client to create the tables of the database
+	-- NOTE, this file is very important. Do not make changes to this unless you are certain you know
 	-- exactly what you are doing. It is used when building the database. --
 
 -- Creates the irc_network table --

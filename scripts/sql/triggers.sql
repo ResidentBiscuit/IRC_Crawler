@@ -1,6 +1,8 @@
 -- Run this script through the SQL client to create the triggers for the database. --
 
 -- Define functions --
+
+-- This function is called whenever an entry is added/removed from the channel_nick_intersection table
 CREATE FUNCTION update_channel_user_count() RETURNS TRIGGER AS $$
 DECLARE
 	_inc integer;
