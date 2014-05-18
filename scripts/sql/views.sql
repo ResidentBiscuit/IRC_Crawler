@@ -29,7 +29,7 @@ FROM channel_nick_intersection cn
 
 -- Create messages view: Displays columns (message_id, network, recipient, nick, message, timestamp)
 CREATE VIEW messages_view AS
-SELECT  m.message_id, net.network_name, m.recipient, n.nick, m.message, m.time
+SELECT  net.network_name, m.recipient, n.nick, m.message, m.time
 FROM    message m
     JOIN nick n ON m.nick_id = n.nick_id
     JOIN irc_network net ON n.network_id = net.network_id;
