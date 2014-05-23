@@ -42,9 +42,9 @@ CREATE TABLE nick(
 	ip_address		inet			NULL,
 	hostname		varchar(512)	NULL,
 	PRIMARY KEY(nick_id),
+	UNIQUE(nick, network_id),
 	FOREIGN KEY(network_id)		REFERENCES irc_network(network_id),
-	FOREIGN KEY(country_code)	REFERENCES country(country_code),
-	UNIQUE(nick, network_id)
+	FOREIGN KEY(country_code)	REFERENCES country(country_code)
 	);
 	
 -- Creates the channel_nick_intersection table --
@@ -55,7 +55,8 @@ CREATE TABLE channel_nick_intersection(
 	modes			varchar(256)	NULL,
 	PRIMARY KEY(channel_id, nick_id),
 	FOREIGN KEY(channel_id) REFERENCES channel(channel_id),
-	FOREIGN KEY(nick_id)	REFERENCES nick(nick_id)
+	FOREIGN KEY(nick_id)	REFERENCES nick(nick_id),
+	CONSTRAINT verify_networks_match CHECK (verify_networks_match(nick_id, channel_id))
 	);
 	
 -- Creates the message table --

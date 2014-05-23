@@ -1,4 +1,5 @@
--- This file populates all tables of the irc_crawler_test database with some testing data. --
+-- This file populates all tables of the irc_crawler_test database with some testing data.
+-- Some of these INSERTS will FAIL, due to some constraints. This is what should happen, we're testing here :)
 -- DO NOT RUN THIS ON A PRODUCTION DATATBASE --
 
 INSERT INTO irc_network(network_name, user_count) VALUES('irc.freenode.net', 0);
@@ -23,7 +24,6 @@ INSERT INTO channel_nick_intersection(nick_id, channel_id) VALUES(1, 1);
 INSERT INTO channel_nick_intersection(nick_id, channel_id) VALUES(2, 1);
 INSERT INTO channel_nick_intersection(nick_id, channel_id) VALUES(3, 1);
 INSERT INTO channel_nick_intersection(nick_id, channel_id) VALUES(4, 1);
-INSERT INTO channel_nick_intersection(nick_id, channel_id) VALUES(5, 1);
 INSERT INTO channel_nick_intersection(nick_id, channel_id) VALUES(1, 2);
 INSERT INTO channel_nick_intersection(nick_id, channel_id) VALUES(2, 3);
 INSERT INTO channel_nick_intersection(nick_id, channel_id) VALUES(5, 4);
