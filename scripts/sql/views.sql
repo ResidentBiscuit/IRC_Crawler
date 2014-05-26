@@ -31,5 +31,5 @@ FROM channel_nick_intersection cn
 CREATE VIEW messages_view AS
 SELECT  net.network_name, m.recipient, n.nick, m.message, m.time
 FROM    message m
-    JOIN nick n ON m.nick_id = n.nick_id
-    JOIN irc_network net ON n.network_id = net.network_id;
+    INNER JOIN nick n ON m.nick_id = n.nick_id
+    INNER JOIN irc_network net ON n.network_id = net.network_id;
