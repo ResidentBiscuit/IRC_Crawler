@@ -2,7 +2,7 @@
 
 -- This function should only be called whenever an entry is added/removed from the channel_nick_intersection table
 -- It increments/decrements the user_count of channels and irc_networks whenever a user joins/leaves a channel
-CREATE FUNCTION update_user_count() RETURNS TRIGGER AS $$
+CREATE FUNCTION update_channel_user_count() RETURNS TRIGGER AS $$
 DECLARE
     _inc integer;
     _channel_id integer;

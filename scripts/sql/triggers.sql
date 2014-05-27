@@ -3,10 +3,10 @@
 -- Trigger for keeping channel.user_count up to date
 -- Note, PRE-RI_... in place because this trigger must run before FK constraint,
 -- and FK constraints are all RI_...
-CREATE TRIGGER "PRE_RI_update_user_count"
+CREATE TRIGGER "PRE_RI_update_channel_user_count"
 	AFTER INSERT OR DELETE ON channel_nick_intersection
 	FOR EACH ROW
-	EXECUTE PROCEDURE update_user_count();
+	EXECUTE PROCEDURE update_channel_user_count();
 
 -- This trigger makes sure that a nick does not join a channel outside of its network
 CREATE TRIGGER verify_networks
