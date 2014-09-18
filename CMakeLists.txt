@@ -2,6 +2,7 @@
 #
 # Written by Jared Ready
 # 09/18/2014
+# Only works/tested on Ubuntu 14.04 currently
 
 cmake_minimum_required(VERSION 2.8)
 project(CRAWLIRC)
