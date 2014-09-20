@@ -1,6 +1,13 @@
 #ifndef TCPCONNECTION_H
 #define TCPCONNECTION_H
 
+/**
+ * TcpConnection.
+ * Provides a basic interace for opening up, reading, and writing to a TCP socket with another host.
+ *
+ * @author Jared Ready
+ */
+
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <queue>
@@ -12,6 +19,10 @@
 class TcpConnection
 {
 public:
+    /**
+     * Constructor.
+     * @param host 
+     */
     TcpConnection(const std::string& host, const std::string& port);
     void connect();
     void disconnect();
