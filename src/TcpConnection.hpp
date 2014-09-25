@@ -37,9 +37,9 @@ private:
     std::string m_host;
     std::string m_port;
     std::queue<std::string> m_recv_queue;
-    std::thread run_thread;
-    std::string message;
-    bool connected;
+    std::thread m_run_thread;
+    std::string m_message;
+    bool m_connected;
  
     boost::asio::streambuf m_buffer;
     boost::asio::io_service m_io_service;

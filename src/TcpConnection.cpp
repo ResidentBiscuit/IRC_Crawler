@@ -13,12 +13,12 @@ void TcpConnection::connect()
 
         boost::asio::connect(m_socket, endpoint_iterator);
 
-        connected = true;
+        m_connected = true;
 
         boost::asio::async_read_until(m_socket, m_buffer, "\r\n", 
             std::bind(&TcpConnection::read_handler, this, std::placeholders::_1, std::placeholders::_2));
 
-        run_thread = std::thread([this]() { this->m_io_service.run(); });
+        m_run_thread = std::thread([this]() { this->m_io_service.run(); });
     }
     catch (std::exception& e)
     {
@@ -30,7 +30,7 @@ void TcpConnection::disconnect()
 {
     m_socket.close();
     m_io_service.stop();
-    connected = false;
+    m_connected = false;
 }
 
 void TcpConnection::read_handler(const boost::system::error_code& error, std::size_t bytes_transferred)
@@ -64,9 +64,9 @@ void TcpConnection::send(const std::string& message)
 
 const std::string& TcpConnection::get_next_message()
 {
-    message = m_recv_queue.front();
+    m_message = m_recv_queue.front();
     m_recv_queue.pop();
-    return message;
+    return m_message;
 }
 
 bool TcpConnection::has_message()
@@ -76,5 +76,5 @@ bool TcpConnection::has_message()
 
 bool TcpConnection::is_connected()
 {
-    return connected;
+    return m_connected;
 }
