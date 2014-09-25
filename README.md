@@ -4,10 +4,7 @@ Project Crawl IRC (cIRC) is an upcoming IRC search engine, built on top of the p
 
 This repository houses code which runs the crawler itself (and the SQL which builds the database, which I need to move).
 
-Building:
-
-*Only tested on Ubuntu 14.04, with G++4.9 and CMake 2.8.12*
-
+<h3>Building</h3>
     mkdir build && cd build
     cmake ..
     make
