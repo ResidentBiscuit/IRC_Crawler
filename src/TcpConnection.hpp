@@ -43,7 +43,13 @@ public:
      * @return the message.
      */
     const std::string& get_next_message();
+    /**
+     * @return true if there is a message waiting in receive queue
+     */
     bool has_message();
+    /**
+     * @return true if connection is alive
+     */
     bool is_connected();
  
 private:
