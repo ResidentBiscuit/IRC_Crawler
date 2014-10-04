@@ -30,6 +30,10 @@ public:
      */
     void connect();
     /**
+     * Closes current connection and opens a new connection to host:port
+     */
+    void connect(const std::string& host, const std::string& port);
+    /**
      * Close connection
      */
     void disconnect();

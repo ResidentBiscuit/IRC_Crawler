@@ -3,6 +3,8 @@
 TcpConnection::TcpConnection(const std::string& host, const std::string& port)
     : m_host(host), m_port(port), m_socket(m_io_service), m_work(m_io_service) {}
 
+TcpConnection::TcpConnection() {}
+
 void TcpConnection::connect()
 {
     try
@@ -26,11 +28,24 @@ void TcpConnection::connect()
     }
 }
 
+void connect(const std::string& host, const std::string& port)
+{
+    disconnect();
+    m_host = host;
+    m_port = port;
+    connect();
+}
+
 void TcpConnection::disconnect()
 {
     m_socket.close();
     m_io_service.stop();
     m_connected = false;
+    //Remove remaining packets in queue
+    while(!m_recv_queue.empty())
+    {
+        m_recv_queue.pop();
+    }
 }
 
 void TcpConnection::read_handler(const boost::system::error_code& error, std::size_t bytes_transferred)
