@@ -18,4 +18,9 @@ void IrcBot::run()
 void IrcBot::handle_message(const std::string& message)
 {
 	//Need to parse the message, RegEx ahoy!
+	if(message.find("PING") == 0)
+	{
+		m_connection.send(pong(message.substr(4, std::string::npos)));
+	}
+	
 }

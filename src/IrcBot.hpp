@@ -1,6 +1,9 @@
 #ifndef IRCBOT_H
 #define IRCBOT_H
 
+#include <string>
+#include <vector>
+
 #include "TcpConnection.hpp"
 
 class IrcBot
@@ -26,7 +29,10 @@ private:
 	std::vector<std::string> get_user_listing(const std::string& channel);
 	std::vector<std::string> get_user_listing();
 
-	void pong(const std::string& parameter);
+	void pong(const std::string& parameter)
+	{
+		return "PONG " + parameter;
+	}
 
 	TcpConnection m_connection;
 
