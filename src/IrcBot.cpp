@@ -47,6 +47,7 @@ void IrcBot::handle_message(const std::string& message)
 			command_parameters.push_back(tokens[i]);
 		}
 	}
+	//There is no prefix, so the first token is the command and following are parameters
 	else
 	{
 		command = tokens[0];
