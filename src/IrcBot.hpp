@@ -29,11 +29,6 @@ private:
 	std::vector<std::string> get_user_listing(const std::string& channel);
 	std::vector<std::string> get_user_listing();
 
-	void pong(const std::string& parameter)
-	{
-		return "PONG " + parameter;
-	}
-
 	TcpConnection m_connection;
 
 	std::string m_nick;
