@@ -29,6 +29,7 @@ void IrcBot::handle_message(const std::string& message)
 		return;
 	}
 
+	//Tokenize message
 	std::stringstream ss(message);
 	std::string token;
 	std::vector<std::string> tokens;
@@ -38,7 +39,7 @@ void IrcBot::handle_message(const std::string& message)
 	}
 
 	//If message has a prefix, we need to strip that off. Command is the following token then
-	if(tokens[0].find(":") == 0)
+	if(tokens[0].find(':') == 0)
 	{
 		prefix = message.substr(1, message.find(' '));
 		command = tokens[1];
