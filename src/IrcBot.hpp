@@ -10,10 +10,6 @@ class IrcBot
 {
 public:
 	IrcBot(const std::string& nick, const std::string& user, const std::string &);
-	/**
-	 * UNIMPLEMENTED
-	 */
-	//IrcBot(const std::string& config_file);
 
 	void connect(const std::string network, int port = 6667);
 
