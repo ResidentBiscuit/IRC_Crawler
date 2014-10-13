@@ -4,16 +4,16 @@
 
 IrcBot::IrcBot(const std::string& nick, const std::string& user) : m_nick(nick), m_user(user) {}
 
-void IrcBot::connect(const std::string network, int port = 6667)
+void IrcBot::connect(const std::string network, int port)
 {
-	m_connection.connect(network, std::to_string(port));
+	m_connection = std::move(std::unique_ptr<TcpConnection>(new TcpConnection(network, std::to_string(port))));
 }
 
 void IrcBot::run()
 {
-	while(m_connection.has_message())
+	while(m_connection->has_message())
 	{
-		handle_message(m_connection.get_next_message());
+		handle_message(m_connection->get_next_message());
 	}
 }
 
@@ -25,7 +25,7 @@ void IrcBot::handle_message(const std::string& message)
 	//If server sends a PING, need to send back a PONG
 	if(message.find("PING") == 0)
 	{
-		m_connection.send("PONG " + (message.substr(4, std::string::npos)));
+		send_message("PONG " + (message.substr(4, std::string::npos)));
 		return;
 	}
 
@@ -58,4 +58,9 @@ void IrcBot::handle_message(const std::string& message)
 		}
 	}
 	
+}
+
+void IrcBot::send_message(const std::string& message)
+{
+	m_connection->send(message);
 }

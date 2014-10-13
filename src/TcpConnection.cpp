@@ -3,8 +3,6 @@
 TcpConnection::TcpConnection(const std::string& host, const std::string& port)
     : m_host(host), m_port(port), m_socket(m_io_service), m_work(m_io_service) {}
 
-TcpConnection::TcpConnection() {}
-
 void TcpConnection::connect()
 {
     try
@@ -28,7 +26,7 @@ void TcpConnection::connect()
     }
 }
 
-void connect(const std::string& host, const std::string& port)
+void TcpConnection::connect(const std::string& host, const std::string& port)
 {
     disconnect();
     m_host = host;
