@@ -68,7 +68,13 @@ void TcpConnection::read_handler(const boost::system::error_code& error, std::si
             std::bind(&TcpConnection::read_handler, this, std::placeholders::_1, std::placeholders::_2));
 }
 
-void TcpConnection::write_handler(const boost::system::error_code& error, std::size_t bytes_transferred) {}
+void TcpConnection::write_handler(const boost::system::error_code& error, std::size_t bytes_transferred)
+{
+    if(error.value() != 0)
+    {
+        std::cout << error.message();
+    }
+}
 
 void TcpConnection::send(const std::string& message)
 {

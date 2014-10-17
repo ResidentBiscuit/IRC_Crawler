@@ -42,6 +42,14 @@ void IrcBot::handle_message(const std::string& message)
 		return;
 	}
 
+	//Register connection once ready
+	if(message.find("NOTICE AUTH :*** Found your hostname") != std::string::npos || message.find("NOTICE AUTH :*** Couldn't look up your hostname") != std::string::npos)
+	{
+		send_message("NICK ResidentBot\r\n");
+		send_message("USER ResidentBiscuit 0 0: ResidentBiscuit\r\n");
+		return;
+	}
+
 	//Tokenize message
 	std::stringstream ss(message);
 	std::string token;
@@ -75,5 +83,6 @@ void IrcBot::handle_message(const std::string& message)
 
 void IrcBot::send_message(const std::string& message)
 {
+	std::cout << "\tSending: " << message << std::endl;
 	m_connection->send(message);
 }
