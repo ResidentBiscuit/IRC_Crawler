@@ -1,16 +1,19 @@
 #include "IrcBot.hpp"
 
 #include <sstream>
+#include <iostream>
 
 IrcBot::IrcBot(const std::string& nick, const std::string& user) : m_nick(nick), m_user(user) {}
 
 void IrcBot::connect(const std::string network, int port)
 {
-	m_connection = std::move(std::unique_ptr<TcpConnection>(new TcpConnection(network, std::to_string(port))));
+	m_connection.reset(new TcpConnection(network, std::to_string(port)));
+	m_connection->connect();
 }
 
 void IrcBot::run()
 {
+	m_running = true;
 	while(is_running())
 	{
 		while(m_connection->has_message())
@@ -20,8 +23,15 @@ void IrcBot::run()
 	}
 }
 
+bool IrcBot::is_running()
+{
+	return m_running;
+}
+
 void IrcBot::handle_message(const std::string& message)
 {
+	std::cout << message;
+
 	std::string prefix;
 	std::string command;
 	std::vector<std::string> command_parameters(15);
