@@ -11,9 +11,12 @@ void IrcBot::connect(const std::string network, int port)
 
 void IrcBot::run()
 {
-	while(m_connection->has_message())
+	while(is_running())
 	{
-		handle_message(m_connection->get_next_message());
+		while(m_connection->has_message())
+		{
+			handle_message(m_connection->get_next_message());
+		}
 	}
 }
 
