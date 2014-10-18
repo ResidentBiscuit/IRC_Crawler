@@ -27,6 +27,7 @@ private:
 	std::string m_nick;
 	std::string m_user;
 	bool m_running;
+	bool m_connected;
 };
 
 #endif

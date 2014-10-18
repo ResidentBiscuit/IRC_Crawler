@@ -14,10 +14,19 @@ void IrcBot::connect(const std::string network, int port)
 void IrcBot::run()
 {
 	m_running = true;
+	m_connected = false;
 	while(is_running())
 	{
 		while(m_connection->has_message())
 		{
+			//Register connection once ready.
+			//We have to wait for the server to send something before we can send the connection registration parameters.
+			if(!m_connected)
+			{
+				send_message("NICK ResidentBot\r\n");
+				send_message("USER ResidentBiscuit 0 0: ResidentBiscuit\r\n");
+				m_connected = true;
+			}
 			handle_message(m_connection->get_next_message());
 		}
 	}
@@ -39,14 +48,6 @@ void IrcBot::handle_message(const std::string& message)
 	if(message.find("PING") == 0)
 	{
 		send_message("PONG " + (message.substr(4, std::string::npos)));
-		return;
-	}
-
-	//Register connection once ready
-	if(message.find("NOTICE AUTH :*** Found your hostname") != std::string::npos || message.find("NOTICE AUTH :*** Couldn't look up your hostname") != std::string::npos)
-	{
-		send_message("NICK ResidentBot\r\n");
-		send_message("USER ResidentBiscuit 0 0: ResidentBiscuit\r\n");
 		return;
 	}
 
@@ -83,6 +84,5 @@ void IrcBot::handle_message(const std::string& message)
 
 void IrcBot::send_message(const std::string& message)
 {
-	std::cout << "\tSending: " << message << std::endl;
 	m_connection->send(message);
 }
