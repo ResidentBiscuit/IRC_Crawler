@@ -79,6 +79,13 @@ void IrcBot::handle_message(const std::string& message)
 			command_parameters.push_back(tokens[i]);
 		}
 	}
+
+	//Join channels after server has given us the MOTD
+	//Numeric reply 376 = RPL_ENDOFMOTD
+	if(command == "376")
+	{
+		send_message("JOIN #cplusplus\r\n");
+	}
 	
 }
 
