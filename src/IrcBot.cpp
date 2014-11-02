@@ -51,9 +51,6 @@ void IrcBot::handle_message(const std::string& message)
 {
 	std::cout << message;
 
-	std::string prefix;
-	std::string command;
-	std::vector<std::string> command_parameters(15);
 	//If server sends a PING, need to send back a PONG
 	if(message.find("PING") == 0)
 	{
@@ -69,6 +66,10 @@ void IrcBot::handle_message(const std::string& message)
 	{
 		tokens.push_back(token);
 	}
+
+	std::string prefix;
+	std::string command;
+	std::vector<std::string> command_parameters(15);
 
 	//If message has a prefix, we need to strip that off. Command is the following token then
 	if(tokens[0].find(':') == 0)
