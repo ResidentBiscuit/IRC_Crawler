@@ -39,11 +39,15 @@ void TcpConnection::disconnect()
     m_socket.close();
     m_io_service.stop();
     m_connected = false;
-    //Remove remaining packets in queue
+    //Remove remaining packets in queues
     while(!m_recv_queue.empty())
     {
         m_recv_queue.pop();
     }
+	while (!m_send_queue.empty())
+	{
+		m_send_queue.pop();
+	}
 }
 
 void TcpConnection::read_handler(const boost::system::error_code& error, std::size_t bytes_transferred)
