@@ -11,6 +11,16 @@ void IrcBot::connect(const std::string network, int port)
 	m_connection->connect();
 }
 
+void IrcBot::add_channel(const IrcChannel& channel)
+{
+	m_channel_list.emplace_back(channel);
+}
+
+const std::vector<IrcChannel>& IrcBot::get_channel_list()
+{
+	return m_channel_list;
+}
+
 void IrcBot::run()
 {
 	m_running = true;
@@ -80,13 +90,15 @@ void IrcBot::handle_message(const std::string& message)
 		}
 	}
 
-	//Join channels after server has given us the MOTD
-	//Numeric reply 376 = RPL_ENDOFMOTD
+	//Get channel listing after server has finished sending the MOTD
 	if(command == "376")
 	{
-		send_message("JOIN #cplusplus\r\n");
+		send_message("LIST\r\n");
 	}
-	
+	if(command == "322")
+	{
+		add_channel(IrcChannel(command_parameters[0]));
+	}
 }
 
 void IrcBot::send_message(const std::string& message)
