@@ -9,7 +9,6 @@
  */
 
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
 #include <queue>
 #include <string>
 #include <thread>
