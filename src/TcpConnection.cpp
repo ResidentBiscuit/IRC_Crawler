@@ -50,6 +50,28 @@ void TcpConnection::disconnect()
 	}
 }
 
+void TcpConnection::send(const std::string& message)
+{
+	m_strand.post(std::bind(&TcpConnection::write_impl, this, message));
+}
+
+const std::string& TcpConnection::get_next_message()
+{
+	m_message = m_recv_queue.front();
+	m_recv_queue.pop();
+	return m_message;
+}
+
+bool TcpConnection::has_message()
+{
+	return !m_recv_queue.empty();
+}
+
+bool TcpConnection::is_connected()
+{
+	return m_connected;
+}
+
 void TcpConnection::read_handler(const boost::system::error_code& error, std::size_t bytes_transferred)
 {
     //Need to add handle for errors...
@@ -88,11 +110,6 @@ void TcpConnection::write_handler(const boost::system::error_code& error, std::s
 	}
 }
 
-void TcpConnection::send(const std::string& message)
-{
-	m_strand.post(std::bind(&TcpConnection::write_impl, this, message));
-}
-
 void TcpConnection::write()
 {
 	const std::string& message = m_send_queue.front();
@@ -109,21 +126,4 @@ void TcpConnection::write_impl(const std::string& message)
 	}
 
 	write();
-}
-
-const std::string& TcpConnection::get_next_message()
-{
-    m_message = m_recv_queue.front();
-    m_recv_queue.pop();
-    return m_message;
-}
-
-bool TcpConnection::has_message()
-{
-    return !m_recv_queue.empty();
-}
-
-bool TcpConnection::is_connected()
-{
-    return m_connected;
 }
