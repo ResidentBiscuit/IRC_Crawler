@@ -1,7 +1,7 @@
 #include "TcpConnection.hpp"
 
 TcpConnection::TcpConnection(const std::string& host, const std::string& port)
-    : m_host(host), m_port(port), m_socket(m_io_service), m_work(m_io_service) {}
+    : m_host(host), m_port(port), m_strand(m_io_service), m_socket(m_io_service), m_work(m_io_service) {}
 
 void TcpConnection::connect()
 {
@@ -48,7 +48,7 @@ void TcpConnection::disconnect()
 
 void TcpConnection::read_handler(const boost::system::error_code& error, std::size_t bytes_transferred)
 {
-    //Need to handle errors...
+    //Need to add handle for errors...
 
     //Prepare m_buffer for output
     std::istream is(&m_buffer);
@@ -70,15 +70,41 @@ void TcpConnection::read_handler(const boost::system::error_code& error, std::si
 
 void TcpConnection::write_handler(const boost::system::error_code& error, std::size_t bytes_transferred)
 {
-    if(error.value() != 0)
-    {
-        std::cout << error.message();
-    }
+	m_send_queue.pop();
+
+	if(error.value() != 0)
+	{
+		std::cerr << "Failed to write: " << error.message() << std::endl;
+	}
+
+	if(!m_send_queue.empty())
+	{
+		//More messages to send
+		write();
+	}
 }
 
 void TcpConnection::send(const std::string& message)
 {
-    boost::asio::async_write(m_socket, boost::asio::buffer(message), std::bind(&TcpConnection::write_handler, this, std::placeholders::_1, std::placeholders::_2));
+	m_strand.post(std::bind(&TcpConnection::write_impl, this, message));
+}
+
+void TcpConnection::write()
+{
+	const std::string& message = m_send_queue.front();
+	boost::asio::async_write(m_socket, boost::asio::buffer(message), std::bind(&TcpConnection::write_handler, this, std::placeholders::_1, std::placeholders::_2));
+}
+
+void TcpConnection::write_impl(const std::string& message)
+{
+	m_send_queue.push(message);
+	if (m_send_queue.size() > 1)
+	{
+		//Waiting to send another message still
+		return;
+	}
+
+	write();
 }
 
 const std::string& TcpConnection::get_next_message()
