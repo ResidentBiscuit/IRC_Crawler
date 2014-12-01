@@ -23,8 +23,8 @@ void IrcBot::run()
 			//We have to wait for the server to send something before we can send the connection registration parameters.
 			if(!m_connected)
 			{
-				send_message("NICK ResidentBot\r\n");
-				send_message("USER ResidentBiscuit 0 0: ResidentBiscuit\r\n");
+				send_message("NICK " + m_nick + "\r\n");
+				send_message("USER " + m_user + " 0 0: " + m_user + "\r\n");
 				m_connected = true;
 			}
 			handle_message(m_connection->get_next_message());
@@ -84,7 +84,7 @@ void IrcBot::handle_message(const std::string& message)
 	//Numeric reply 376 = RPL_ENDOFMOTD
 	if(command == "376")
 	{
-		send_message("JOIN #cplusplus\r\n");
+		send_message("JOIN #cplusplus.com\r\n");
 	}
 	
 }
