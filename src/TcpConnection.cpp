@@ -1,7 +1,7 @@
 #include "TcpConnection.hpp"
 
 TcpConnection::TcpConnection(const std::string& host, const std::string& port)
-    : m_host(host), m_port(port), m_socket(m_io_service), m_work(m_io_service) {}
+    : m_host(host), m_port(port), m_strand(m_io_service), m_socket(m_io_service), m_work(m_io_service) {}
 
 void TcpConnection::connect()
 {
@@ -39,16 +39,42 @@ void TcpConnection::disconnect()
     m_socket.close();
     m_io_service.stop();
     m_connected = false;
-    //Remove remaining packets in queue
+    //Remove remaining packets in queues
     while(!m_recv_queue.empty())
     {
         m_recv_queue.pop();
     }
+	while (!m_send_queue.empty())
+	{
+		m_send_queue.pop();
+	}
+}
+
+void TcpConnection::send(const std::string& message)
+{
+	m_strand.post(std::bind(&TcpConnection::write_impl, this, message));
+}
+
+const std::string& TcpConnection::get_next_message()
+{
+	m_message = m_recv_queue.front();
+	m_recv_queue.pop();
+	return m_message;
+}
+
+bool TcpConnection::has_message()
+{
+	return !m_recv_queue.empty();
+}
+
+bool TcpConnection::is_connected()
+{
+	return m_connected;
 }
 
 void TcpConnection::read_handler(const boost::system::error_code& error, std::size_t bytes_transferred)
 {
-    //Need to handle errors...
+    //Need to add handle for errors...
 
     //Prepare m_buffer for output
     std::istream is(&m_buffer);
@@ -70,30 +96,34 @@ void TcpConnection::read_handler(const boost::system::error_code& error, std::si
 
 void TcpConnection::write_handler(const boost::system::error_code& error, std::size_t bytes_transferred)
 {
-    if(error.value() != 0)
-    {
-        std::cout << error.message();
-    }
+	m_send_queue.pop();
+
+	if(error.value() != 0)
+	{
+		std::cerr << "Failed to write: " << error.message() << std::endl;
+	}
+
+	if(!m_send_queue.empty())
+	{
+		//More messages to send
+		write();
+	}
 }
 
-void TcpConnection::send(const std::string& message)
+void TcpConnection::write()
 {
-    boost::asio::async_write(m_socket, boost::asio::buffer(message), std::bind(&TcpConnection::write_handler, this, std::placeholders::_1, std::placeholders::_2));
+	const std::string& message = m_send_queue.front();
+	boost::asio::async_write(m_socket, boost::asio::buffer(message), std::bind(&TcpConnection::write_handler, this, std::placeholders::_1, std::placeholders::_2));
 }
 
-const std::string& TcpConnection::get_next_message()
+void TcpConnection::write_impl(const std::string& message)
 {
-    m_message = m_recv_queue.front();
-    m_recv_queue.pop();
-    return m_message;
-}
+	m_send_queue.push(message);
+	if (m_send_queue.size() > 1)
+	{
+		//Waiting to send another message still
+		return;
+	}
 
-bool TcpConnection::has_message()
-{
-    return !m_recv_queue.empty();
-}
-
-bool TcpConnection::is_connected()
-{
-    return m_connected;
+	write();
 }

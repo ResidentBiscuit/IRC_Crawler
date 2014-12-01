@@ -9,7 +9,6 @@
  */
 
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
 #include <queue>
 #include <string>
 #include <thread>
@@ -38,7 +37,7 @@ public:
      */
     void disconnect();
     /**
-     * Send a message though the connection
+     * Pushes a message onto the send queue to be sent
      * @param message message to send
      */
     void send(const std::string& message);
@@ -60,15 +59,20 @@ private:
     void read_handler(const boost::system::error_code& error, std::size_t bytes_transferred);
     void write_handler(const boost::system::error_code& error, std::size_t bytes_transferred);
 
+	void write();
+	void write_impl(const std::string& message);
+
     std::string m_host;
     std::string m_port;
     std::queue<std::string> m_recv_queue;
+	std::queue<std::string> m_send_queue;
     std::thread m_run_thread;
     std::string m_message;
     bool m_connected;
  
     boost::asio::streambuf m_buffer;
     boost::asio::io_service m_io_service;
+	boost::asio::io_service::strand m_strand;
     boost::asio::io_service::work m_work;
     boost::asio::ip::tcp::socket m_socket;
 };
