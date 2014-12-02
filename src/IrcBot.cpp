@@ -51,7 +51,6 @@ void IrcBot::handle_message(const std::string& message)
 {
 	std::cout << message;
 
-	std::vector<std::string> command_parameters(15);
 	//If server sends a PING, need to send back a PONG
 	if(message.find("PING") == 0)
 	{
@@ -98,7 +97,7 @@ void IrcBot::handle_message(const std::string& message)
 	}
 	if(command == "322")
 	{
-		add_channel(IrcChannel(command_parameters[0]));
+		//add_channel(IrcChannel(command_parameters[0]));
 	}
 }
 
