@@ -13,8 +13,8 @@ class IrcBot
 public:
 	IrcBot(const std::string& nick, const std::string& user);
 	void connect(const std::string network, int port = 6667);
-	void add_channel(const IrcChannel& channel);
-	const std::vector<IrcChannel>& get_channel_list();
+	void add_channel(const std::string& channel_name);
+	const std::vector<std::unique_ptr<IrcChannel>>& get_channel_list();
 	void run();
 	bool is_running();
 
@@ -24,7 +24,7 @@ private:
 
 	std::unique_ptr<TcpConnection> m_connection;
 
-	std::vector<IrcChannel> m_channel_list;
+	std::vector<std::unique_ptr<IrcChannel>> m_channel_list;
 
 	std::string m_nick;
 	std::string m_user;

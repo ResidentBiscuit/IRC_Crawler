@@ -1,5 +1,7 @@
 #include "IrcBot.hpp"
 
+#include "IRC.hpp"
+#include "IrcChannel.hpp"
 #include <sstream>
 #include <iostream>
 
@@ -11,12 +13,12 @@ void IrcBot::connect(const std::string network, int port)
 	m_connection->connect();
 }
 
-void IrcBot::add_channel(const IrcChannel& channel)
+void IrcBot::add_channel(const std::string& channel_name)
 {
-	m_channel_list.emplace_back(channel);
+	m_channel_list.emplace_back(new IrcChannel(channel_name));
 }
 
-const std::vector<IrcChannel>& IrcBot::get_channel_list()
+const std::vector<std::unique_ptr<IrcChannel>>& IrcBot::get_channel_list()
 {
 	return m_channel_list;
 }
@@ -91,13 +93,13 @@ void IrcBot::handle_message(const std::string& message)
 	}
 
 	//Get channel listing after server has finished sending the MOTD
-	if(command == "376")
+	if(command == IRC::RPL_ENDOFMOTD)
 	{
 		send_message("LIST\r\n");
 	}
-	if(command == "322")
+	if(command == IRC::RPL_LIST)
 	{
-		//add_channel(IrcChannel(command_parameters[0]));
+		add_channel(command_parameters[0]);
 	}
 }
 

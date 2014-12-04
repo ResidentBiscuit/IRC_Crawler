@@ -10,7 +10,6 @@
 class IrcChannel
 {
 public:
-	IrcChannel();
 	IrcChannel(const std::string& channel_name);
 	const std::string& get_channel_name();
 	void add_user(const IrcUser& user);
