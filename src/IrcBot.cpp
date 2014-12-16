@@ -85,7 +85,7 @@ void IrcBot::handle_message(const std::string& message)
 		}
 	}
 
-	//Get channel listing after server has finished sending the MOTD
+	//Join channels after recieving server MOTD
 	if(command == IRC::RPL_ENDOFMOTD)
 	{
 		send_message("JOIN #botdever\r\n");
