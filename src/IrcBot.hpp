@@ -19,6 +19,8 @@ public:
 	bool is_running();
 
 private:
+	void register_connection();
+
 	void handle_message(const std::string& message);
 	void send_message(const std::string& message);
 

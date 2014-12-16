@@ -4,6 +4,8 @@
 #include "IrcChannel.hpp"
 #include <sstream>
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 IrcBot::IrcBot(const std::string& nick, const std::string& user) : m_nick(nick), m_user(user) {}
 
@@ -13,40 +15,31 @@ void IrcBot::connect(const std::string network, int port)
 	m_connection->connect();
 }
 
-void IrcBot::add_channel(const std::string& channel_name)
-{
-	m_channel_list.emplace_back(new IrcChannel(channel_name));
-}
-
-const std::vector<std::unique_ptr<IrcChannel>>& IrcBot::get_channel_list()
-{
-	return m_channel_list;
-}
-
 void IrcBot::run()
 {
+	register_connection();
+
 	m_running = true;
-	m_connected = false;
 	while(is_running())
 	{
 		while(m_connection->has_message())
 		{
-			//Register connection once ready.
-			//We have to wait for the server to send something before we can send the connection registration parameters.
-			if(!m_connected)
-			{
-				send_message("NICK " + m_nick + "\r\n");
-				send_message("USER " + m_user + " 0 0: " + m_user + "\r\n");
-				m_connected = true;
-			}
 			handle_message(m_connection->get_next_message());
 		}
+		//We can wait a second for more messages to show up. No need to endlessly beat the CPU
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 }
 
 bool IrcBot::is_running()
 {
 	return m_running;
+}
+
+void IrcBot::register_connection()
+{
+	send_message("NICK " + m_nick + "\r\n");
+	send_message("USER " + m_user + " 0 0: " + m_user + "\r\n");
 }
 
 void IrcBot::handle_message(const std::string& message)
@@ -96,6 +89,7 @@ void IrcBot::handle_message(const std::string& message)
 	if(command == IRC::RPL_ENDOFMOTD)
 	{
 		send_message("LIST\r\n");
+		send_message("JOIN #botdever\r\n");
 	}
 	if(command == IRC::RPL_LIST)
 	{
