@@ -52,7 +52,7 @@ void IrcBot::handle_message(const std::string& message)
 	std::vector<std::string> tokens;
 	while(std::getline(ss, token, ' '))
 	{
-		tokens.push_back(token);
+		tokens.emplace_back(token);
 	}
 
 	//If message has a prefix, we need to strip that off and the command is the following token
@@ -65,7 +65,7 @@ void IrcBot::handle_message(const std::string& message)
 		command = tokens[1];
 		for(int i = 2; i < tokens.size(); i++)
 		{
-			command_parameters.push_back(tokens[i]);
+			command_parameters.emplace_back(tokens[i]);
 		}
 	}
 	//There is no prefix, so the first token is the command and following are parameters
@@ -74,7 +74,7 @@ void IrcBot::handle_message(const std::string& message)
 		command = tokens[0];
 		for(int i = 1; i < tokens.size(); i++)
 		{
-			command_parameters.push_back(tokens[i]);
+			command_parameters.emplace_back(tokens[i]);
 		}
 	}
 
