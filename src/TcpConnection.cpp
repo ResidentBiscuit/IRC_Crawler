@@ -3,6 +3,12 @@
 TcpConnection::TcpConnection(const std::string& host, const std::string& port)
     : m_host(host), m_port(port), m_strand(m_io_service), m_socket(m_io_service), m_work(m_io_service) {}
 
+TcpConnection::~TcpConnection()
+{
+    disconnect();
+    std::cout << "Socket destroyed." << std::endl;
+}
+
 void TcpConnection::connect()
 {
     try

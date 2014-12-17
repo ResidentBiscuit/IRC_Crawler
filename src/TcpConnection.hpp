@@ -24,6 +24,7 @@ public:
      * @param port port number
      */
     TcpConnection(const std::string& host, const std::string& port);
+    ~TcpConnection();
     /**
      * Open a connection to host:port
      */
