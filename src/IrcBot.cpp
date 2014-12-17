@@ -46,13 +46,6 @@ void IrcBot::handle_message(const std::string& message)
 {
 	std::cout << message;
 
-	//If server sends a PING, need to send back a PONG
-	if(message.find("PING") == 0)
-	{
-		send_message("PONG " + (message.substr(4, std::string::npos)));
-		return;
-	}
-
 	//Tokenize message
 	std::stringstream ss(message);
 	std::string token;
@@ -83,6 +76,11 @@ void IrcBot::handle_message(const std::string& message)
 		{
 			command_parameters.push_back(tokens[i]);
 		}
+	}
+
+	if(command == "PING")
+	{
+		send_message("PONG " + command_parameters.front());
 	}
 
 	//Join channels after connection is registered
