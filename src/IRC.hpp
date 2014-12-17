@@ -12,6 +12,7 @@
 
 namespace IRC
 {
+	static const std::string RPL_WELCOME = "001";
 	static const std::string RPL_LIST = "322";
 	static const std::string RPL_LISTEND = "323";
 	static const std::string RPL_ENDOFMOTD = "376";
