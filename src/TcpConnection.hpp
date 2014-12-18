@@ -49,7 +49,7 @@ public:
      * Messages are pushed onto a queue asynchronously. This method pops a message off the queue.
      * @return the message.
      */
-    const std::string& get_next_message();
+    std::string get_next_message();
     /**
      * @return true if there is a message waiting in receive queue
      */

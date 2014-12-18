@@ -2,7 +2,7 @@
 
 #include "IRC.hpp"
 #include "IrcChannel.hpp"
-#include <sstream>
+#include "Message.hpp"	
 #include <iostream>
 #include <thread>
 #include <chrono>
@@ -46,54 +46,24 @@ void IrcBot::handle_message(const std::string& message)
 {
 	std::cout << message;
 
-	//Tokenize message
-	std::stringstream ss(message);
-	std::string token;
-	std::vector<std::string> tokens;
-	while(std::getline(ss, token, ' '))
-	{
-		tokens.emplace_back(token);
-	}
+	Message msg(message);
 
-	//If message has a prefix, we need to strip that off and the command is the following token
-	std::string prefix;
-	std::string command;
-	std::vector<std::string> command_parameters;
-	if(tokens[0].find(':') == 0)
+	if(msg.get_command() == "PING")
 	{
-		prefix = message.substr(1, message.find(' ') - 1);
-		command = tokens[1];
-		for(int i = 2; i < tokens.size(); i++)
-		{
-			command_parameters.emplace_back(tokens[i]);
-		}
-	}
-	//There is no prefix, so the first token is the command and following are parameters
-	else
-	{
-		command = tokens[0];
-		for(int i = 1; i < tokens.size(); i++)
-		{
-			command_parameters.emplace_back(tokens[i]);
-		}
-	}
-
-	if(command == "PING")
-	{
-		send_message("PONG " + command_parameters.front());
+		send_message("PONG " + msg.get_command_parameters().front());
 	}
 
 	//Join channels after connection is registered
-	if(command == IRC::RPL_WELCOME)
+	if(msg.get_command() == IRC::RPL_WELCOME)
 	{
 		send_message("JOIN #botdever\r\n");
 	}
 
-	if(command == "PRIVMSG")
+	if(msg.get_command() == "PRIVMSG")
 	{
-		if(command_parameters.at(1) == ":" + m_nick + ":")
+		if(msg.get_nick() == m_nick)
 		{
-			if(command_parameters.at(2) == "Quit\r\n")
+			if(msg.get_message() == "Quit\r\n")
 			{
 				send_message("QUIT\r\n");
 				m_connection->disconnect();

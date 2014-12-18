@@ -71,7 +71,7 @@ void TcpConnection::send(const std::string& message)
 	m_strand.post(std::bind(&TcpConnection::write_impl, this, message));
 }
 
-const std::string& TcpConnection::get_next_message()
+std::string TcpConnection::get_next_message()
 {
 	m_message = m_recv_queue.front();
 	m_recv_queue.pop();
