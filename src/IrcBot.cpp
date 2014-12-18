@@ -58,7 +58,7 @@ void IrcBot::handle_message(const std::string& message)
 	//If message has a prefix, we need to strip that off and the command is the following token
 	std::string prefix;
 	std::string command;
-	std::vector<std::string> command_parameters(15);
+	std::vector<std::string> command_parameters;
 	if(tokens[0].find(':') == 0)
 	{
 		prefix = message.substr(1, message.find(' '));
@@ -87,6 +87,19 @@ void IrcBot::handle_message(const std::string& message)
 	if(command == IRC::RPL_WELCOME)
 	{
 		send_message("JOIN #botdever\r\n");
+	}
+
+	if(command == "PRIVMSG")
+	{
+		if(command_parameters.at(1) == ":" + m_nick + ":")
+		{
+			if(command_parameters.at(2) == "Quit\r\n")
+			{
+				send_message("QUIT\r\n");
+				m_connection->disconnect();
+				m_running = false;
+			}
+		}
 	}
 }
 

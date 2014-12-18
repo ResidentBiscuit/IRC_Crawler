@@ -5,7 +5,10 @@ TcpConnection::TcpConnection(const std::string& host, const std::string& port)
 
 TcpConnection::~TcpConnection()
 {
-    disconnect();
+    if(m_connected)
+    {
+        disconnect();
+    }
     std::cout << "Socket destroyed." << std::endl;
 }
 
@@ -42,18 +45,21 @@ void TcpConnection::connect(const std::string& host, const std::string& port)
 
 void TcpConnection::disconnect()
 {
-    m_socket.close();
-    m_io_service.stop();
-    m_connected = false;
+    boost::system::error_code error;
+    m_socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, error);
     //Remove remaining packets in queues
     while(!m_recv_queue.empty())
     {
         m_recv_queue.pop();
     }
-	while (!m_send_queue.empty())
-	{
-		m_send_queue.pop();
-	}
+    while (!m_send_queue.empty())
+    {
+        m_send_queue.pop();
+    }
+    m_run_thread.detach();
+    m_socket.close();
+    m_io_service.stop();
+    m_connected = false;
 }
 
 void TcpConnection::send(const std::string& message)
