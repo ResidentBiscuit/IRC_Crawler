@@ -61,7 +61,7 @@ void IrcBot::handle_message(const std::string& message)
 	std::vector<std::string> command_parameters;
 	if(tokens[0].find(':') == 0)
 	{
-		prefix = message.substr(1, message.find(' '));
+		prefix = message.substr(1, message.find(' ') - 1);
 		command = tokens[1];
 		for(int i = 2; i < tokens.size(); i++)
 		{

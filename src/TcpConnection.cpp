@@ -5,7 +5,7 @@ TcpConnection::TcpConnection(const std::string& host, const std::string& port)
 
 TcpConnection::~TcpConnection()
 {
-    if(m_connected)
+    if(is_connected())
     {
         disconnect();
     }
@@ -45,6 +45,10 @@ void TcpConnection::connect(const std::string& host, const std::string& port)
 
 void TcpConnection::disconnect()
 {
+    if(!is_connected())
+    {
+        return;
+    }
     boost::system::error_code error;
     m_socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, error);
     //Remove remaining packets in queues
